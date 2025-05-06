@@ -1,5 +1,6 @@
 import { Card } from '@/app/components/Card';
 import { ThemedText } from '@/app/components/ThemedText';
+import { getPokemonArtwork } from '@/functions/pokemons';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Link } from 'expo-router';
 import { Image, Pressable, StyleSheet, type ViewStyle } from 'react-native';
@@ -20,9 +21,9 @@ export function PokemonCard({ style, id, name }: Props) {
           </ThemedText>
           <Image
             source={{
-              uri: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`,
+              uri: getPokemonArtwork(id),
             }}
-            style={{ width: 110, height: 110, zIndex: 1 }}
+            style={{ width: 100, height: 100, zIndex: 1 }}
           />
           <ThemedText>{name}</ThemedText>
           {/* <View

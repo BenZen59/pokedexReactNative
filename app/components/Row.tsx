@@ -1,4 +1,4 @@
-import { View, ViewProps, ViewStyle } from 'react-native';
+import { StyleSheet, View, ViewProps } from 'react-native';
 
 type Props = ViewProps & {
   gap?: number;
@@ -6,14 +6,16 @@ type Props = ViewProps & {
 export function Row({ style, gap, ...rest }: Props) {
   return (
     <View
-      style={[rowStyle, style, gap ? { gap: gap } : undefined]}
+      style={[styles.row, style, gap ? { gap: gap } : undefined]}
       {...rest}
-    ></View>
+    />
   );
 }
 
-const rowStyle = {
-  flex: 0,
-  flexDirection: 'row',
-  alignItems: 'center',
-} satisfies ViewStyle;
+const styles = StyleSheet.create({
+  row: {
+    flex: 0,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+});

@@ -3,8 +3,15 @@ import { Radio } from '@/app/components/Radio';
 import { Row } from '@/app/components/Row';
 import { ThemedText } from '@/app/components/ThemedText';
 import { useThemeColors } from '@/hooks/useThemeColors';
-import { useState } from 'react';
-import { Image, Modal, Pressable, StyleSheet, View } from 'react-native';
+import { useRef, useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  Modal,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 
 type Props = {
   value: 'id' | 'name';
@@ -20,10 +27,21 @@ const options = [
 ] as const;
 
 export function SortButton({ value, onChange }: Props) {
+  const buttonRef = useRef<View>(null);
   const colors = useThemeColors();
   const [isModalVisible, setModalVisibility] = useState(false);
+  const [position, setPosition] = useState<null | {
+    top: number;
+    right: number;
+  }>();
   const onButtonPress = () => {
-    setModalVisibility(true);
+    buttonRef.current?.measureInWindow((x, y, width, height) => {
+      setPosition({
+        top: y + height,
+        right: Dimensions.get('window').width - x - width,
+      });
+      setModalVisibility(true);
+    });
   };
   const onClose = () => {
     setModalVisibility(false);
@@ -31,7 +49,10 @@ export function SortButton({ value, onChange }: Props) {
   return (
     <>
       <Pressable onPress={onButtonPress}>
-        <View style={[styles.button, { backgroundColor: colors.grayWhite }]}>
+        <View
+          ref={buttonRef}
+          style={[styles.button, { backgroundColor: colors.grayWhite }]}
+        >
           <Image
             source={
               value === 'id'
@@ -41,9 +62,16 @@ export function SortButton({ value, onChange }: Props) {
           />
         </View>
       </Pressable>
-      <Modal transparent visible={isModalVisible} onRequestClose={onClose}>
+      <Modal
+        animationType='fade'
+        transparent
+        visible={isModalVisible}
+        onRequestClose={onClose}
+      >
         <Pressable style={styles.backdrop} onPress={onClose} />
-        <View style={[styles.popup, { backgroundColor: colors.tint }]}>
+        <View
+          style={[styles.popup, { backgroundColor: colors.tint, ...position }]}
+        >
           <ThemedText
             style={styles.title}
             variant='subtitle2'
@@ -53,8 +81,8 @@ export function SortButton({ value, onChange }: Props) {
           </ThemedText>
           <Card style={styles.card}>
             {options.map((o) => (
-              <Pressable onPress={() => onChange(o.value)}>
-                <Row key={o.value} gap={8}>
+              <Pressable key={o.value} onPress={() => onChange(o.value)}>
+                <Row gap={8}>
                   <Radio checked={o.value === value} />
                   <ThemedText>{o.label}</ThemedText>
                 </Row>
