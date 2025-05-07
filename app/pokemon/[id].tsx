@@ -1,10 +1,15 @@
 import { Card } from '@/app/components/Card';
+import { PokemonSpec } from '@/app/components/pokemon/PokemonSpec';
 import { PokemonType } from '@/app/components/pokemon/PokemonType';
 import { RootView } from '@/app/components/RootView';
 import { Row } from '@/app/components/Row';
 import { ThemedText } from '@/app/components/ThemedText';
 import { Colors } from '@/constants/Colors';
-import { getPokemonArtwork } from '@/functions/pokemons';
+import {
+  formatSize,
+  formatWeight,
+  getPokemonArtwork,
+} from '@/functions/pokemons';
 import { useFetchQuery } from '@/hooks/useFetchQuery';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -58,11 +63,46 @@ export default function Pokemon() {
             style={[styles.artwork, { width: 200, height: 200 }]}
           />
           <Card style={styles.card}>
-            <Row style={{ justifyContent: 'center' }} gap={16}>
+            <Row gap={16}>
               {types.map((type) => (
                 <PokemonType name={type.type.name} key={type.type.name} />
               ))}
             </Row>{' '}
+            <ThemedText variant='subtitle1' style={{ color: colorType }}>
+              About
+            </ThemedText>
+            <Row style={{ marginBottom: 24, marginTop: 24 }}>
+              <PokemonSpec
+                style={{
+                  borderStyle: 'solid',
+                  borderRightWidth: 1,
+                  borderColor: colors.grayLight,
+                }}
+                title={formatWeight(pokemon?.weight)}
+                description='Weight'
+                image={require('@/assets/images/weight.png')}
+              />
+              <PokemonSpec
+                style={{
+                  borderStyle: 'solid',
+                  borderRightWidth: 1,
+                  borderColor: colors.grayLight,
+                }}
+                title={formatSize(pokemon?.height)}
+                description='Size'
+                image={require('@/assets/images/height.png')}
+              />
+              <PokemonSpec
+                title={pokemon?.moves
+                  .slice(0, 2)
+                  .map((m) => m.move.name)
+                  .join('\n')}
+                description='Moves'
+              />
+            </Row>
+            <ThemedText variant='subtitle1' style={{ color: colorType }}>
+              Base Stats
+            </ThemedText>
           </Card>
         </View>
         <Text>Pokemon {params.id}</Text>
@@ -94,5 +134,7 @@ const styles = StyleSheet.create({
   card: {
     paddingHorizontal: 20,
     paddingTop: 60,
+    gap: 16,
+    alignItems: 'center',
   },
 });
