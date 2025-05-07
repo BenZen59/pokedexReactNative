@@ -13,7 +13,8 @@ import {
 import { useFetchQuery } from '@/hooks/useFetchQuery';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { PokemonStat } from '../components/pokemon/PokemonStat';
 
 export default function Pokemon() {
   const colors = useThemeColors();
@@ -28,8 +29,9 @@ export default function Pokemon() {
   const bio = species?.flavor_text_entries
     ?.find(({ language }) => language.name === 'en')
     ?.flavor_text.replaceAll('\n', '.');
+
   return (
-    <RootView style={{ backgroundColor: colorType }}>
+    <RootView backgroundColor={colorType}>
       <View>
         {' '}
         <Image
@@ -73,7 +75,10 @@ export default function Pokemon() {
                 <PokemonType name={type.type.name} key={type.type.name} />
               ))}
             </Row>{' '}
-            <ThemedText variant='subtitle1' style={{ color: colorType }}>
+            <ThemedText
+              variant='subtitle1'
+              style={{ color: colorType, paddingTop: 20 }}
+            >
               About
             </ThemedText>
             <Row style={{ marginBottom: 24, marginTop: 24 }}>
@@ -109,9 +114,23 @@ export default function Pokemon() {
             <ThemedText variant='subtitle1' style={{ color: colorType }}>
               Base Stats
             </ThemedText>
+            <View
+              style={{
+                justifyContent: 'space-between',
+                width: 320,
+              }}
+            >
+              {pokemon?.stats.map((stats) => (
+                <PokemonStat
+                  key={stats.stat.name}
+                  name={stats.stat.name}
+                  value={stats.base_stat}
+                  color={colorType}
+                />
+              ))}
+            </View>
           </Card>
         </View>
-        <Text>Pokemon {params.id}</Text>
       </View>
     </RootView>
   );
