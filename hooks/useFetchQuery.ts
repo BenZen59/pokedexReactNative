@@ -15,7 +15,7 @@ type API = {
     url: string;
     weight: number;
     height: number;
-    moves: { move: { name: string } }[];
+    moves: { move: { name: string; url: string } }[];
     stats: {
       base_stat: number;
       stat: {

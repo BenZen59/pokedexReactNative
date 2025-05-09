@@ -9,10 +9,12 @@ import {
   formatSize,
   formatWeight,
   getPokemonArtwork,
+  getPokemonMoves,
 } from '@/functions/pokemons';
 import { useFetchQuery } from '@/hooks/useFetchQuery';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { PokemonStat } from '../components/pokemon/PokemonStat';
 
@@ -29,7 +31,13 @@ export default function Pokemon() {
   const bio = species?.flavor_text_entries
     ?.find(({ language }) => language.name === 'en')
     ?.flavor_text.replaceAll('\n', '.');
-
+  const [moves, setMoves] = useState<any[]>([]);
+  useEffect(() => {
+    if (pokemon && pokemon.moves) {
+      getPokemonMoves(pokemon.moves).then(setMoves);
+    }
+  }, [pokemon]);
+  console.log(moves); // tableau de détails complets des moves
   return (
     <RootView backgroundColor={colorType}>
       <View>
